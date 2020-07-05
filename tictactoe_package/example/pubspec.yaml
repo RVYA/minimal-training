@@ -1,0 +1,34 @@
+name: example
+description: Example project to showcase the TicTacToe Package
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  tictactoe_package:
+    path: ../
+
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Chilanka
+      fonts:
+        - asset: assets/fonts/Chilanka-Regular.ttf
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway-ExtraLight.ttf
+          weight: 200
