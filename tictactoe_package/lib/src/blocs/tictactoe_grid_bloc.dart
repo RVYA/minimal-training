@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart' show required;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tictactoe_package/src/models/tictactoe_player.dart';
+import 'package:equatable/equatable.dart';
 
+import '../models/tictactoe_player.dart';
 import '../widgets/tictactoe_cell.dart';
 
 
+//region Player Events
 abstract class PlayerEvent {
   const PlayerEvent({
     @required this.markedCellIndex,
@@ -28,25 +30,51 @@ class PlayerPlayed extends PlayerEvent {
 }
 
 class PlayerWon extends PlayerEvent {}
+//endregion
 
 
+//region Tic Tac Toe Grid State
+class GridState extends Equatable {
+  const GridState({@required this.cellStates});
+
+  final List<CellState> cellStates;
+
+  @override
+  List<Object> get props => <Object>[cellStates];
+}
+
+class GridInitial extends GridState {
+  GridInitial()
+  : super(
+      cellStates: List<CellState>.filled(
+                    _kTicTacToeCellCount, CellState.empty,
+                  ),
+    );
+}
+//endregion
+
+
+//region Tic Tac Toe Grid BLoC
 const int _kTicTacToeCellCount = 9;
 
-class TicTacToeGridBloc extends Bloc<PlayerEvent, List<CellState>> {
-  @override
-  List<CellState> get initialState {
-    return List<CellState>
-            .filled(_kTicTacToeCellCount, CellState.empty);
-  }
+class TicTacToeGridBloc extends Bloc<PlayerEvent, GridState> {
+  TicTacToeGridBloc({
+    GridState initialState,
+  })
+  : this._initialState = initialState ?? GridInitial();
+
+  final GridState _initialState;
 
   @override
-  Stream<List<CellState>> mapEventToState(PlayerEvent event) async* {
+  GridState get initialState => _initialState;
+
+  @override
+  Stream<GridState> mapEventToState(PlayerEvent event) async* {
     if (event is PlayerPlayed) {
-      final List<CellState> newState = List<CellState>.from(state);
+      final GridState newState = GridState(cellStates: state.cellStates);
       final CellState updatedCell = playerMarkToCellState(event.playerMark);
-
-      newState[event.markedCellIndex] = updatedCell;
-
+      
+      newState.cellStates[event.markedCellIndex] = updatedCell;
       yield newState;
     } else if (event is PlayerWon) {
       await Future.delayed(const Duration(milliseconds: 1000));
@@ -54,3 +82,4 @@ class TicTacToeGridBloc extends Bloc<PlayerEvent, List<CellState>> {
     }
   }
 }
+//endregion

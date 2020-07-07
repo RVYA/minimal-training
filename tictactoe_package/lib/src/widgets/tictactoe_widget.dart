@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/tictactoe_grid_bloc.dart';
 import '../blocs/tictactoe_score_bloc.dart';
+import '../models/tictactoe_controller.dart';
 import '../models/tictactoe_player.dart';
 import 'tictactoe_grid.dart';
 
@@ -20,6 +21,19 @@ class TicTacToeWidget extends StatefulWidget {
     @required this.isGridLinesFilled,
     @required this.scoreTextStyle,
     @required this.scoreboardPadding,
+  })
+  : this.savedGameState = null;
+
+  const TicTacToeWidget.withSavedGameState({
+    @required this.cellRadius,
+    @required this.playerMarkStyle,
+    @required this.playerMarkRadius,
+    @required this.gridLineColor,
+    @required this.gridLineWidth,
+    @required this.isGridLinesFilled,
+    @required this.scoreTextStyle,
+    @required this.scoreboardPadding,
+    @required this.savedGameState,
   });
 
   final double cellRadius;
@@ -30,6 +44,8 @@ class TicTacToeWidget extends StatefulWidget {
   final bool isGridLinesFilled;
   final TextStyle scoreTextStyle;
   final EdgeInsetsGeometry scoreboardPadding;
+
+  final String savedGameState;
 
 
   @override
@@ -57,10 +73,18 @@ class _TicTacToeWidgetState extends State<TicTacToeWidget> {
     return MultiBlocProvider(
       providers: <BlocProvider>[
         BlocProvider<TicTacToeGridBloc>(
-          create: (BuildContext context) => TicTacToeGridBloc(),
+          create: (BuildContext context) => TicTacToeGridBloc(
+            initialState: (widget.savedGameState != null)?
+              TicTacToeController.deserializeGameState<GridState>(widget.savedGameState)
+            : null,
+          ),
         ),
         BlocProvider<TicTacToeScoreBloc>(
-          create: (BuildContext context) => TicTacToeScoreBloc(),
+          create: (BuildContext context) => TicTacToeScoreBloc(
+            initialState: (widget.savedGameState != null)?
+              TicTacToeController.deserializeGameState<ScoreState>(widget.savedGameState)
+            : null,
+          ),
         ),
       ],
       child: TicTacToeGrid(
