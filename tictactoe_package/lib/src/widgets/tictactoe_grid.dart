@@ -89,11 +89,9 @@ class TicTacToeGrid extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         // Tic-Tac-Toe Grid
-        BlocBuilder<TicTacToeGridBloc, GridState>(
+        BlocBuilder<TicTacToeGridBloc, List<CellState>>(
           bloc   : gridBloc,
-          builder: (BuildContext buildContext, GridState gridState) {
-            final List<CellState> cellStates = gridState.cellStates;
-
+          builder: (BuildContext buildContext, List<CellState> cellStates) {
             final bool isGridAtInitialState =
                 !cellStates.any((CellState state) => state != CellState.empty);
             
@@ -190,10 +188,9 @@ class TicTacToeGrid extends StatelessWidget {
         ),
 
         // Tic-Tac-Toe Scoreboard
-        BlocBuilder<TicTacToeScoreBloc, ScoreState>(
+        BlocBuilder<TicTacToeScoreBloc, Map<Side, int>>(
           bloc   : scoreBloc,
-          builder: (BuildContext buildContext, ScoreState scoreState) {
-            final Map<Side, int> scores = scoreState.scores;
+          builder: (BuildContext buildContext, Map<Side, int> scores) {
             return TicTacToeScoreboard(
               scoreTextStyle   : scoreTextStyle,
               scoreboardPadding: scoreboardPadding,
